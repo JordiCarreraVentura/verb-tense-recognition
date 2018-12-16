@@ -55,11 +55,24 @@ class Arrow:
     def __call__(self, dictionary, gram):
         
         #   test for future ('will' + VB)
-        if gram[0] == 'will' and \
-        dictionary.is_base_form(gram[-1]) and \
-        dictionary.is_lexically_consistent(gram):
-            return 'future'
+        if len(gram) > 1 and gram[0] == 'will':
+            for next in gram[1:]:
+                if dictionary.is_base_form(next) \
+                and dictionary.is_lexically_consistent(gram[:gram.index(next)]):
+                    return 'future'
         
+        #   test for future ('going to' + VB)
+        elif len(gram) > 3 and dictionary.to_be(gram[0]):
+            for i in range(1, len(gram) - 2):
+                go = gram[i]
+                for j in range(i + 1, len(gram) - 1):
+                    to = gram[j]
+                    if to == 'to' \
+                    and dictionary.is_gerund(go) \
+                    and dictionary.to_go(go) \
+                    and dictionary.is_lexically_consistent(gram[1:j]):
+                        return 'future'
+
         #   test for past (VBD)
         elif dictionary.is_past(gram[0]):
             return 'past'
@@ -295,12 +308,13 @@ if __name__ == '__main__':
         'I had studied a little English before I moved to the U.S.',
         'I had been studying English for five years before I moved to the U.S.',
         'If you are having problems, I will help you study English.',
-        'I am going to study English next year.',    # exception!
         'I will be studying English when you arrive tonight.',
-        'I am going to be studying English when you arrive tonight.',
         'I will have studied every tense by the time I finish this course.',
-        'I am going to have studied every tense by the time I finish this course.',
         'I will have been studying English for over two hours by the time you arrive.',
+        
+        'I am going to study English next year.',    # exception!
+        'I am going to be studying English when you arrive tonight.',
+        'I am going to have studied every tense by the time I finish this course.',
         'I am going to have been studying English for over two hours by the time you arrive.'
     ]
     for test in tests:
