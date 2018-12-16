@@ -1,5 +1,6 @@
 import json
 import nltk
+import os
 import tqdm
 
 from FreelingDictionary import FreelingDictionary
@@ -9,14 +10,18 @@ from nltk import (
     wordpunct_tokenize as tokenizer
 )
 
+from Tools import (
+    from_csv,
+    pyclean
+)
+
 from tqdm import tqdm
 
-
-#   Source: https://www.englishpage.com/verbpage/verbtenseintro.html
 from VerbProbabilities import UMBC
 
 
 
+#   Source: https://www.englishpage.com/verbpage/verbtenseintro.html
 
 class Perfectivity:
     def __init__(self):
@@ -306,8 +311,10 @@ class VerbTenseRecognizer:
                             'tense': tense.name()
                         }
                         print gram, '\t', tense.name(), '\t', match
-                        print json.dumps(o, indent=4)
+                        matches.append(o)
                         break
+        return matches
+                        
 
 
 # Training a model using NLTK for recognising tenses
@@ -323,27 +330,42 @@ if __name__ == '__main__':
 
     vtr = VerbTenseRecognizer()
     
-    tests = [
-        'I study English every day.',
-        'I am studying English now.',
-        'I have studied English in several different countries.',
-        'I have been studying English for five years.',
-        'Two years ago, I studied English in England.',
-        'I was studying English when you called yesterday.',
-        'I had studied a little English before I moved to the U.S.',
-        'I had been studying English for five years before I moved to the U.S.',
-        'If you are having problems, I will help you study English.',
-        'I will be studying English when you arrive tonight.',
-        'I will have studied every tense by the time I finish this course.',
-        'I will have been studying English for over two hours by the time you arrive.',
-        
-        'I am going to study English next year.',    # exception!
-        'I am going to be studying English when you arrive tonight.',
-        'I am going to have studied every tense by the time I finish this course.',
-        'I am going to have been studying English for over two hours by the time you arrive.'
-    ]
-    for test in tests:
-        tokens = tokenizer(test)
-        print
-        print tokens
-        vtr(tokens)
+#     tests = [
+#         'I study English every day.',
+#         'I am studying English now.',
+#         'I have studied English in several different countries.',
+#         'I have been studying English for five years.',
+#         'Two years ago, I studied English in England.',
+#         'I was studying English when you called yesterday.',
+#         'I had studied a little English before I moved to the U.S.',
+#         'I had been studying English for five years before I moved to the U.S.',
+#         'If you are having problems, I will help you study English.',
+#         'I will be studying English when you arrive tonight.',
+#         'I will have studied every tense by the time I finish this course.',
+#         'I will have been studying English for over two hours by the time you arrive.',
+#         
+#         'I am going to study English next year.',    # exception!
+#         'I am going to be studying English when you arrive tonight.',
+#         'I am going to have studied every tense by the time I finish this course.',
+#         'I am going to have been studying English for over two hours by the time you arrive.'
+#     ]
+#     for test in tests:
+#         tokens = tokenizer(test)
+#         print
+#         print tokens
+#         vtr(tokens)
+
+    umbc = UMBC()
+    for par in umbc:
+        tokens = []
+        for token in par:
+            if token.count('_') == 1:
+                tokens.append(token.split('_')[0])
+        if tokens:
+            matches = vtr(tokens)
+        if matches:
+            print ' '.join(tokens)
+            print json.dumps(matches, indent=4)
+            print
+
+    pyclean()
