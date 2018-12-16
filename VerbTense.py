@@ -121,49 +121,65 @@ class VerbTense:
 
 #   Presents
 class SimplePresent(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if len(gram) == 1 \
         and self.arrow(dictionary, gram) == 'present' \
         and not self.continuity(dictionary, gram) \
         and not self.perfectivity(dictionary, gram):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'SimplePresent'
 
 class PresentPerfect(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'present' \
         and not self.continuity(dictionary, gram) \
         and self.perfectivity(dictionary, gram) \
         and dictionary.is_participle(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'PresentPerfect'
 
 class PresentContinuous(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'present' \
         and self.continuity(dictionary, gram) \
         and not self.perfectivity(dictionary, gram) \
         and dictionary.is_gerund(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'PresentContinuous'
 
 class PresentPerfectContinuous(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'present' \
         and self.continuity(dictionary, gram) \
         and self.perfectivity(dictionary, gram) \
         and dictionary.is_gerund(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'PresentPerfectContinuous'
@@ -171,49 +187,65 @@ class PresentPerfectContinuous(VerbTense):
 
 #   Pasts
 class SimplePast(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if len(gram) == 1 \
         and self.arrow(dictionary, gram) == 'past' \
         and not self.continuity(dictionary, gram) \
         and not self.perfectivity(dictionary, gram):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'SimplePast'
 
 class PastContinuous(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'past' \
         and self.continuity(dictionary, gram) \
         and not self.perfectivity(dictionary, gram) \
         and dictionary.is_gerund(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'PastContinuous'
 
 class PastPerfect(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'past' \
         and not self.continuity(dictionary, gram) \
         and self.perfectivity(dictionary, gram) \
         and dictionary.is_participle(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'PastPerfect'
 
 class PastPerfectContinuous(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'past' \
         and self.continuity(dictionary, gram) \
         and self.perfectivity(dictionary, gram) \
         and dictionary.is_gerund(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'PastPerfectContinuous'
@@ -221,50 +253,66 @@ class PastPerfectContinuous(VerbTense):
 
 # Futures
 class SimpleFuture(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'future' \
         and not self.continuity(dictionary, gram) \
         and not self.perfectivity(dictionary, gram) \
         and dictionary.is_base_form(gram[-1]) \
         and not [w for w in gram[:-1] if dictionary.is_base_form(w)]:
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'SimpleFuture'
 
 class FutureContinuous(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'future' \
         and self.continuity(dictionary, gram) \
         and not self.perfectivity(dictionary, gram) \
         and dictionary.is_gerund(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'FutureContinuous'
 
 class FuturePerfect(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'future' \
         and not self.continuity(dictionary, gram) \
         and self.perfectivity(dictionary, gram) \
         and dictionary.is_participle(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'FuturePerfect'
 
 class FuturePerfectContinuous(VerbTense):
-    def __call__(self, dictionary, gram):
+    def __call__(self, dictionary, tokens, start, end):
+        gram = tokens[start:end]
         if self.arrow(dictionary, gram) == 'future' \
         and self.continuity(dictionary, gram) \
         and self.perfectivity(dictionary, gram) \
         and dictionary.is_gerund(gram[-1]):
-            return True
-        return False
+            trimmed_gram = self.left_trim(gram)
+            start += len(gram) - len(trimmed_gram)
+            area = set(range(start, start + len(trimmed_gram)))
+            return area, trimmed_gram
+        return set([]), gram
     
     def name(self):
         return 'FuturePerfectContinuous'
