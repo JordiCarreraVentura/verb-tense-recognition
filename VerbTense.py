@@ -237,7 +237,7 @@ class FuturePerfectContinuous(VerbTense):
 
 class VerbTenseRecognizer:
 
-    def __init__(self, min_gram=1, max_gram=4):
+    def __init__(self, min_gram=1, max_gram=6):
         self.dictionary = FreelingDictionary()
         self.min_gram = min_gram
         self.max_gram = max_gram
