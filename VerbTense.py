@@ -22,6 +22,14 @@ class Perfectivity:
         return
 
     def __call__(self, dictionary, gram):
+        # contiguous or nearly-contiguous
+        # form of 'to have' and past participle:
+        for i in range(len(gram) - 1):
+            curr = gram[i]
+            next = gram[i + 1]
+            if dictionary.to_have(curr) \
+            and dictionary.is_participle(next):
+                return True
         return False
 
 
@@ -30,9 +38,13 @@ class Continuity:
         return
 
     def __call__(self, dictionary, gram):
-        if dictionary.is_gerund(gram[-1]) \
-        and dictionary.to_be(gram[0]):
-            return True
+        for i in range(len(gram) - 1):
+            curr = gram[i]
+            next = gram[i + 1]
+            if dictionary.is_gerund(next) \
+            and not dictionary.to_go(next) \
+            and dictionary.to_be(curr):
+                return True
         return False
 
 
