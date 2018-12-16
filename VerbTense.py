@@ -395,7 +395,7 @@ if __name__ == '__main__':
 
     vtr = VerbTenseRecognizer()
     
-#     tests = [
+    tests = [
 #         'I study English every day.',
 #         'I am studying English now.',
 #         'I have studied English in several different countries.',
@@ -413,13 +413,21 @@ if __name__ == '__main__':
 #         'I am going to be studying English when you arrive tonight.',
 #         'I am going to have studied every tense by the time I finish this course.',
 #         'I am going to have been studying English for over two hours by the time you arrive.'
-#     ]
-#     for test in tests:
-#         tokens = tokenizer(test)
-#         print
-#         print tokens
-#         vtr(tokens)
+        'In fact , it could be as simple as planning a midnight stroll while the children are staying over with friends or relatives.',
+        'In fact , it could be as simple as planning a midnight stroll while the children are actually staying over with friends or relatives.',
+        'Ask the child to restate the rule. If children know a rule and are acting on impulse, ask them to stop what they are doing and identify the limit they are breaking. Tell them whether their description is correct.',
+        'Show interest in what your child does. When you think children are about to misbehave, ask them to talk about what they are doing or what they have considered doing. This discussion might distract them from misbehavior.'
+    ]
+    for test in tests:
+        tokens = tokenizer(test)
+        if tokens:
+            matches = vtr(tokens)
+        if matches:
+            print ' '.join(tokens)
+            print json.dumps(matches, indent=4)
+            print
 
+    exit()
     umbc = UMBC()
     for par in umbc:
         tokens = []
