@@ -25,38 +25,44 @@ from VerbProbabilities import UMBC
 
 class Perfectivity:
     def __init__(self):
-        return
+        self.index = -1
 
     def __call__(self, dictionary, gram):
         # contiguous or nearly-contiguous
         # form of 'to have' and past participle:
         for i in range(len(gram) - 1):
             curr = gram[i]
-            next = gram[i + 1]
-            if dictionary.to_have(curr) \
-            and dictionary.is_participle(next):
-                return True
+            for j in range(i + 1, len(gram)):
+                next = gram[j]
+                if dictionary.to_have(curr) \
+                and dictionary.is_participle(next) \
+                and dictionary.is_lexically_consistent(gram[i:j]):
+                    self.index = i
+                    return True
         return False
 
 
 class Continuity:
     def __init__(self):
-        return
+        self.index = -1
 
     def __call__(self, dictionary, gram):
         for i in range(len(gram) - 1):
             curr = gram[i]
-            next = gram[i + 1]
-            if dictionary.is_gerund(next) \
-            and not dictionary.to_go(next) \
-            and dictionary.to_be(curr):
-                return True
+            for j in range(i + 1, len(gram)):
+                next = gram[j]
+                if dictionary.is_gerund(next) \
+                and not dictionary.to_go(next) \
+                and dictionary.to_be(curr) \
+                and dictionary.is_lexically_consistent(gram[i:j]):
+                    self.index = i
+                    return True
         return False
 
 
 class Arrow:
     def __init__(self):
-        return
+        self.index = -1
     
     def __call__(self, dictionary, gram):
         
@@ -65,6 +71,7 @@ class Arrow:
             for next in gram[1:]:
                 if dictionary.is_base_form(next) \
                 and dictionary.is_lexically_consistent(gram[:gram.index(next)]):
+                    self.index = 0
                     return 'future'
         
         #   test for future ('going to' + VB)
@@ -77,6 +84,7 @@ class Arrow:
                     and dictionary.is_gerund(go) \
                     and dictionary.to_go(go) \
                     and dictionary.is_lexically_consistent(gram[1:j]):
+                        self.index = 0
                         return 'future'
 
         #   test for past (VBD)
@@ -97,6 +105,17 @@ class VerbTense:
         self.arrow = Arrow()
         self.continuity = Continuity()
         self.perfectivity = Perfectivity()
+    
+    def left_trim(self, gram):
+        _indexes = [
+            self.arrow.index,
+            self.continuity.index,
+            self.perfectivity.index
+        ]
+        indexes = [i for i in _indexes if i > -1]
+        if not indexes:
+            return gram
+        return gram[min(indexes):]
         
 
 
