@@ -106,6 +106,13 @@ class FreelingDictionary:
             if 'VBG' in self.forms_by_lemma[lemma][w]:
                 return True
         return False
+        
+    def is_participle(self, w):
+        lemmas = self[w]
+        for lemma in lemmas:
+            if 'VBN' in self.forms_by_lemma[lemma][w]:
+                return True
+        return False
     
     def is_finite_verb(self, w):
         lemmas = self[w]
