@@ -35,6 +35,16 @@ class FreelingDictionary:
         if self._to_be.has_key(w):
             return self._to_be[w]
         return None
+
+    def to_have(self, w):
+        if self._to_have.has_key(w):
+            return self._to_have[w]
+        return None
+
+    def to_go(self, w):
+        if self._to_go.has_key(w):
+            return self._to_go[w]
+        return None
     
     def __load_adverbs(self):
         self.adverbs = deft(bool)
@@ -46,6 +56,20 @@ class FreelingDictionary:
             form: pos
             for form, lemma, pos in read('dictionary/verbs.aux')
             if lemma == 'be'
+        }
+    
+    def __to_go(self):
+        self._to_go = {
+            form: pos
+            for form, lemma, pos in read('dictionary/verbs.aux')
+            if lemma == 'go'
+        }
+    
+    def __to_have(self):
+        self._to_have = {
+            form: pos
+            for form, lemma, pos in read('dictionary/verbs.aux')
+            if lemma == 'have'
         }
     
     def __getitem__(self, w):
@@ -94,6 +118,8 @@ class FreelingDictionary:
 
     def __load(self):
         self.__to_be()
+        self.__to_have()
+        self.__to_go()
         self.__load_verbs()
         self.__load_adverbs()
         self.__load_breakers()
