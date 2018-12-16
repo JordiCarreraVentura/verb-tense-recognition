@@ -111,7 +111,8 @@ class PresentPerfect(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'present' \
         and not self.continuity(dictionary, gram) \
-        and self.perfectivity(dictionary, gram):
+        and self.perfectivity(dictionary, gram) \
+        and dictionary.is_participle(gram[-1]):
             return True
         return False
     
@@ -122,7 +123,8 @@ class PresentContinuous(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'present' \
         and self.continuity(dictionary, gram) \
-        and not self.perfectivity(dictionary, gram):
+        and not self.perfectivity(dictionary, gram) \
+        and dictionary.is_gerund(gram[-1]):
             return True
         return False
     
@@ -133,7 +135,8 @@ class PresentPerfectContinuous(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'present' \
         and self.continuity(dictionary, gram) \
-        and self.perfectivity(dictionary, gram):
+        and self.perfectivity(dictionary, gram) \
+        and dictionary.is_gerund(gram[-1]):
             return True
         return False
     
@@ -158,7 +161,8 @@ class PastContinuous(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'past' \
         and self.continuity(dictionary, gram) \
-        and not self.perfectivity(dictionary, gram):
+        and not self.perfectivity(dictionary, gram) \
+        and dictionary.is_gerund(gram[-1]):
             return True
         return False
     
@@ -169,7 +173,8 @@ class PastPerfect(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'past' \
         and not self.continuity(dictionary, gram) \
-        and self.perfectivity(dictionary, gram):
+        and self.perfectivity(dictionary, gram) \
+        and dictionary.is_participle(gram[-1]):
             return True
         return False
     
@@ -180,7 +185,8 @@ class PastPerfectContinuous(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'past' \
         and self.continuity(dictionary, gram) \
-        and self.perfectivity(dictionary, gram):
+        and self.perfectivity(dictionary, gram) \
+        and dictionary.is_gerund(gram[-1]):
             return True
         return False
     
@@ -193,7 +199,9 @@ class SimpleFuture(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'future' \
         and not self.continuity(dictionary, gram) \
-        and not self.perfectivity(dictionary, gram):
+        and not self.perfectivity(dictionary, gram) \
+        and dictionary.is_base_form(gram[-1]) \
+        and not [w for w in gram[:-1] if dictionary.is_base_form(w)]:
             return True
         return False
     
@@ -204,7 +212,8 @@ class FutureContinuous(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'future' \
         and self.continuity(dictionary, gram) \
-        and not self.perfectivity(dictionary, gram):
+        and not self.perfectivity(dictionary, gram) \
+        and dictionary.is_gerund(gram[-1]):
             return True
         return False
     
@@ -215,7 +224,8 @@ class FuturePerfect(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'future' \
         and not self.continuity(dictionary, gram) \
-        and self.perfectivity(dictionary, gram):
+        and self.perfectivity(dictionary, gram) \
+        and dictionary.is_participle(gram[-1]):
             return True
         return False
     
@@ -226,7 +236,8 @@ class FuturePerfectContinuous(VerbTense):
     def __call__(self, dictionary, gram):
         if self.arrow(dictionary, gram) == 'future' \
         and self.continuity(dictionary, gram) \
-        and self.perfectivity(dictionary, gram):
+        and self.perfectivity(dictionary, gram) \
+        and dictionary.is_gerund(gram[-1]):
             return True
         return False
     
