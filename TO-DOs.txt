@@ -1,0 +1,22 @@
+Python NLTK Training a model using NLTK for recognising tenses Nota 1 lexical consistency for all verbs (over UMBC corpus, many false negative tokens prepended to match)
+
+Python NLTK Training a model using NLTK for recognising tenses Nota 2 Negation
+
+
+Python NLTK Training a model using NLTK for recognising tenses Nota 3 Classifier for new tenses
+Sunday, December 16, 2018
+
+NOTA
+"Training a model using NLTK for recognising tenses"
+(a) Identify the tense of the given sentence: He has been working in the company since 2017
+JORDI: Class, regex matching, rules, returns object.
+
+(b) Fill in the blank with correct form of tense : He ............(leave) the office before you reach.
+JORDI: with previous class, go through large corpus, detect tense, take context, vectorize, train model.
+JORDI: test on different portion of same dataset: find verb, detect tense (gold standard), remove verb, add blank, predict with train model, assess match.
+
+https://groups.google.com/forum/#!topic/nltk-users/xaFHHQOx8lA
+http://dev.lexalytics.com/wiki/pmwiki.php?n=Main.POSTags
+https://www.clips.uantwerpen.be/pages/mbsp-tags
+https://www.sketchengine.eu/penn-treebank-tagset/
+
