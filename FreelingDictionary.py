@@ -22,10 +22,11 @@ BREAKER_EXCEPTIONS = [
 
 class FreelingDictionary:
     
-    def __init__(self):
+    def __init__(self, pos_probs):
         self.contractions = []
         self.determiners = []
         self.adverbs = []
+        self.pos_probs = pos_probs
         self.breakers = deft(bool)
         self.forms_by_lemma = deft(dict)
         self.lemmas_by_form = deft(list)
@@ -136,8 +137,24 @@ class FreelingDictionary:
         for form, lemma, pos in tqdm(verbs):
             if not self.forms_by_lemma[lemma].has_key(form):
                 self.forms_by_lemma[lemma][form] = []
-            self.forms_by_lemma[lemma][form].append(pos)
-            self.lemmas_by_form[form].append(lemma)
+
+            #   is the form in the PoS probabilities dictionary?
+            ##  if not, then continue as when no PoS prob info was available:
+            if not self.pos_probs.keys():
+                self.forms_by_lemma[lemma][form].append(pos)
+                self.lemmas_by_form[form].append(lemma)
+            
+            ##  otherwise, the set of PoS tags in the PoS probs
+            ##  specifies the allowed pos-tags for this word; if 
+            ##  the current tag is not in it, it must be disregarded:
+            elif not self.pos_probs.has_key(form):
+                continue
+            elif (
+                (not pos.startswith('V') and '*' in self.pos_probs[form]) or
+                (pos.startswith('V') and 'VB' in self.pos_probs[form])
+            ):
+                self.forms_by_lemma[lemma][form].append(pos)
+                self.lemmas_by_form[form].append(lemma)
     
     def is_lexically_consistent(self, gram):
         if [w for w in gram[1:-1] if self.breakers[w]]:

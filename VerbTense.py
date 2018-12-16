@@ -13,6 +13,7 @@ from tqdm import tqdm
 
 
 #   Source: https://www.englishpage.com/verbpage/verbtenseintro.html
+from VerbProbabilities import UMBC
 
 
 
@@ -248,8 +249,11 @@ class FuturePerfectContinuous(VerbTense):
 
 class VerbTenseRecognizer:
 
-    def __init__(self, min_gram=1, max_gram=6):
-        self.dictionary = FreelingDictionary()
+    def __init__(self, min_gram=1, max_gram=6, verb_probs='verb.probabilities.bkp.csv'):
+        self.verb_probs = verb_probs
+        self.PoS = dict([])
+        self.__load_probs()
+        self.dictionary = FreelingDictionary(self.PoS)
         self.min_gram = min_gram
         self.max_gram = max_gram
         self.tenses = [
@@ -270,6 +274,16 @@ class VerbTenseRecognizer:
             SimpleFuture()
 
         ]
+    
+    def __load_probs(self):
+        if not os.path.exists(self.verb_probs):
+            return
+        for form, pos, prob in from_csv(self.verb_probs):
+            if float(prob) < 0.33:
+                continue
+            if not self.PoS.has_key(form):
+                self.PoS[form] = set([])
+            self.PoS[form].add(pos)
     
     def __call__(self, tokens):
         matches = []
