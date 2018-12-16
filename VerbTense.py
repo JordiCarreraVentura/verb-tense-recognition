@@ -362,24 +362,22 @@ class VerbTenseRecognizer:
         covered = set([])
         for n in range(self.max_gram, self.min_gram - 1, -1):
             for i, gram in enumerate(ngrams(tokens, n)):
-                start = i
-                end = i + n
-                area = set(range(start, end))
-                if area.intersection(covered):
-                    continue
                 for tense in self.tenses:
-                    match = tense(self.dictionary, gram)
-                    if match:
-                        covered.update(area)
-                        o = {
-                            'start': start,
-                            'end': end,
-                            'text': ' '.join(tokens[start:end]),
-                            'tense': tense.name()
-                        }
-                        print gram, '\t', tense.name(), '\t', match
-                        matches.append(o)
-                        break
+                    start = i
+                    end = i + n
+                    area, match = tense(self.dictionary, tokens, start, end)
+                    if not area or area.intersection(covered):
+                        continue
+                    covered.update(area)
+                    o = {
+                        'start': min(area),
+                        'end': max(area),
+                        'text': ' '.join(match),
+                        'tense': tense.name()
+                    }
+                    print gram, '\t', match, '\t', tense.name(), '\t'
+                    matches.append(o)
+                    break
         return matches
                         
 
